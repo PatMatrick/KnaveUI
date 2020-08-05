@@ -127,6 +127,15 @@ def mainscreen():
     food = "Rations: " + str(Player.rations)
     inventoryslots = "Inventory Slots: " + str(Player.currentinventory) + "/" + str(Player.inventoryslots)
     statindicators = "  DEFENSE    ABILITY    BONUS"
+    commandoptions1 = "1.) Attack"
+    commandoptions2 = "2.) Change HP"
+    commandoptions3 = "3.) Change Level"
+    commandoptions4 = "4.) Change Copper Amount"
+    commandoptions5 = "5.) Change Stats"
+    commandoptions6 = "6.) Consume Ration"
+    commandoptions7 = "7.) View Inventory"
+    commandoptions8 = "8.) Change Inventory"
+    commandoptions9 = "9.) Save Current State"
     strline = str(Player.strength) + "       " + " STR        " + str(Player.strbonus)
     dexline = str(Player.dex) + "       " + " DEX        " + str(Player.dexbonus)
     conline = str(Player.con) + "       " + " CON        " + str(Player.conbonus)
@@ -140,7 +149,40 @@ def mainscreen():
     print(money.ljust(40, " ") + intline.center(20, " "))
     print(food.ljust(40, " ") + wisline.center(20, " "))
     print(inventoryslots.ljust(40, " ") + chaline.center(20, " "))
-
+    print(commandoptions1.center(40, " ")
+    print(commandoptions2.center(40, " ")
+    print(commandoptions3.center(40, " ")
+    print(commandoptions4.center(40, " ")
+    print(commandoptions5.center(40, " ")
+    print(commandoptions6.center(40, " ")
+    print(commandoptions7.center(40, " ")
+    print(commandoptions8.center(40, " ")
+    print(commandoptions9.center(40, " ")
+    print("Select command optiont by selecting a number.")
+    option = input("->")
+    if option == "1":
+          attack()
+    if option == "2":
+          changehp()
+    if option == "3":
+          changelevel()
+    if option == "4":
+          changecopper()
+    if option == "5":
+          changestats()
+    if option == "6":
+          consumeration()
+    if option == "7":
+          viewinventory()
+    if option == "8":
+          changeinventory()
+    if option == "9":
+          savegame()
+    else:
+          print("Invalid choice, click enter to try again")
+          input("->")
+          mainscreen()
+          
 
 
 
