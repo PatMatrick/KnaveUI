@@ -185,7 +185,18 @@ def mainscreen():
           
 
 
+def attack():
+    #INSERT DICE ROLLER APPLICATION#
+          
+def changehp():
+    print("To change HP, use the - or + symbol, followed by the number. Press b to return")
+    option = input("->")
+          ##NEEDS WORK##
+    
+          
+          
 
+          
 startmenu()
 
 ######YEAHHHHHH
