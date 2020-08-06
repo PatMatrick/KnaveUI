@@ -1,5 +1,7 @@
 import math
 import random
+import os
+import pickle
 
 
 class Player:
@@ -41,6 +43,12 @@ class Player:
 
 
 def startmenu():
+    print(" _  ___   _     __      ________ _    _ _____")
+    print("| |/ / \ | |   /\ \    / /  ____| |  | |_   _|")
+    print("| ' /|  \| |  /  \ \  / /| |__  | |  | | | |")
+    print("|  < | . ` | / /\ \ \/ / |  __| | |  | | | |")
+    print("| . \| |\  |/ ____ \  /  | |____| |__| |_| |")
+    print("|_|\_\_| \_/_/    \_\/   |______|\____/|_____|")
     print("Hello and Welcome to the Knave Interactive Character Sheet! Select an option below by choosing a number")
     print("1.) Create a new character")
     print("2.) Load Current Character")
@@ -49,6 +57,7 @@ def startmenu():
         newchar()
     if option == "2":
         load()
+
 
 def newchar():
     print("Let's make a new character! You will need to roll up you stats and enter them here. Enter your name and click enter to continue.")
@@ -96,7 +105,7 @@ def newchar():
     print("What is your vice?")
     Player.vice = input("->")
     print("What is your speech?")
-    Player.speech = input ("->")
+    Player.speech = input("->")
     print("What is your background?")
     Player.background = input("->")
     print("What is your misfortune?")
@@ -118,8 +127,13 @@ def newchar():
     Player.hp = Player.maxhp
     mainscreen()
 
-def mainscreen():
 
+def mainscreen():
+    os.system('cls')
+    if Player.hp <= 0:
+        dead()
+    if Player.hp > Player.maxhp:
+        Player.hp = Player.maxhp
     nameplate = "Name: " + Player.name
     hp = "HP: " + str(Player.hp) + "/" + str(Player.maxhp)
     plevel = "Level: " + str(Player.level)
@@ -127,7 +141,7 @@ def mainscreen():
     food = "Rations: " + str(Player.rations)
     inventoryslots = "Inventory Slots: " + str(Player.currentinventory) + "/" + str(Player.inventoryslots)
     statindicators = "  DEFENSE    ABILITY    BONUS"
-    commandoptions1 = "1.) Attack"
+    commandoptions1 = "1.) Dice Roller and Attack"
     commandoptions2 = "2.) Change HP"
     commandoptions3 = "3.) Change Level"
     commandoptions4 = "4.) Change Copper Amount"
@@ -136,6 +150,12 @@ def mainscreen():
     commandoptions7 = "7.) View Inventory"
     commandoptions8 = "8.) Change Inventory"
     commandoptions9 = "9.) Save Current State"
+    print(" _  ___   _     __      ________ _    _ _____")
+    print("| |/ / \ | |   /\ \    / /  ____| |  | |_   _|")
+    print("| ' /|  \| |  /  \ \  / /| |__  | |  | | | |")
+    print("|  < | . ` | / /\ \ \/ / |  __| | |  | | | |")
+    print("| . \| |\  |/ ____ \  /  | |____| |__| |_| |")
+    print("|_|\_\_| \_/_/    \_\/   |______|\____/|_____|")
     strline = str(Player.strength) + "       " + " STR        " + str(Player.strbonus)
     dexline = str(Player.dex) + "       " + " DEX        " + str(Player.dexbonus)
     conline = str(Player.con) + "       " + " CON        " + str(Player.conbonus)
@@ -149,60 +169,221 @@ def mainscreen():
     print(money.ljust(40, " ") + intline.center(20, " "))
     print(food.ljust(40, " ") + wisline.center(20, " "))
     print(inventoryslots.ljust(40, " ") + chaline.center(20, " "))
-    print(commandoptions1.center(40, " ")
-    print(commandoptions2.center(40, " ")
-    print(commandoptions3.center(40, " ")
-    print(commandoptions4.center(40, " ")
-    print(commandoptions5.center(40, " ")
-    print(commandoptions6.center(40, " ")
-    print(commandoptions7.center(40, " ")
-    print(commandoptions8.center(40, " ")
-    print(commandoptions9.center(40, " ")
-    print("Select command optiont by selecting a number.")
+    print(commandoptions1.center(40, " "))
+    print(commandoptions2.center(40, " "))
+    print(commandoptions3.center(40, " "))
+    print(commandoptions4.center(40, " "))
+    print(commandoptions5.center(40, " "))
+    print(commandoptions6.center(40, " "))
+    print(commandoptions7.center(40, " "))
+    print(commandoptions8.center(40, " "))
+    print(commandoptions9.center(40, " "))
+    print("Select command option by selecting a number.")
     option = input("->")
     if option == "1":
-          attack()
+        attack()
     if option == "2":
-          changehp()
+        changehp()
     if option == "3":
-          changelevel()
+        changelevel()
     if option == "4":
-          changecopper()
+        changecopper()
     if option == "5":
-          changestats()
+        changestats()
     if option == "6":
-          consumeration()
+        consumeration()
     if option == "7":
-          viewinventory()
+        viewinventory()
     if option == "8":
-          changeinventory()
+        changeinventory()
     if option == "9":
-          savegame()
+        savegame()
     else:
-          print("Invalid choice, click enter to try again")
-          input("->")
-          mainscreen()
-          
+        mainscreen()
+
+
+
+
+def savegame():
+    if os.path.exists("savefile") == True:
+        os.system('cls')
+        with open("savefile", "rb") as f:
+            global Player
+            Player = pickle.load(f)
+        print("Loaded save state...your journey onto perfection continues!")
+        option = input("->")
+        mainscreen()
+
+
+def changehp():
+    print("Max HP or Current HP? Select b and enter to go back.")
+    print("1.) Max HP")
+    print("2.) Current HP")
+    option1 = input("->")
+    if option1.strip() == "1":
+        print("What is your new max hp? (Enter a number)")
+        option = int(input("->"))
+        Player.maxhp = option
+        print("Your new max HP has been saved!")
+        mainscreen()
+    if option1.strip() == "2":
+        print("Increase or Decrease?")
+        print("1.) Increase")
+        print("2.) Decrease")
+        option2 = input("->")
+        if option2.strip() == "1":
+            print("By how much? (Enter a number)")
+            option3 = int(input("->"))
+            Player.hp += option3
+            print("Your HP has increased")
+            input("->")
+            mainscreen()
+        if option2.strip() == "2":
+            print("By how much? (Enter a number)")
+            option4 = int(input("->"))
+            Player.hp -= option4
+            print("Your HP has decreased")
+            input("->")
+            mainscreen()
+    if option1.strip().lower() == "b":
+        mainscreen()
+    else:
+        print("Invalid option try again.")
+        changehp()
 
 
 def attack():
-    #INSERT DICE ROLLER APPLICATION#
-          
-def changehp():
-    print("To change HP, use the - or + symbol, followed by the number. Press b to return")
-    option = input("->")
-          ##NEEDS WORK##
-    
-          
-          
+    start()
 
-          
+def start():
+    print("Hello! Welcome to the KnaveUI dice roller! Which dice would you like to roll? (Press b to return)")
+    print("1.) D4")
+    print("2.) D6")
+    print("3.) D8")
+    print("4.) D10")
+    print("5.) D12")
+    print("6.) D20")
+    print("7.) D100")
+    option = input("-> ")
+    if option == "1":
+        dicerolld4()
+    elif option == "2":
+        dicerolld6()
+    elif option == "3":
+        dicerolld8()
+    elif option == "4":
+        dicerolld10()
+    elif option == "5":
+        dicerolld12()
+    elif option == "6":
+        dicerolld20()
+    elif option == "7":
+        dicerolld100()
+    elif option.strip().lower() == "b":
+        mainscreen()
+    else:
+        print("Invalid Option")
+        start()
+
+
+def dicerolld10():
+    print("Roll the d10 dice! Click Enter! Click b to return")
+    option = input("-> ")
+    if option == "b":
+        start()
+    else:
+        print(random.randint(1, 10))
+
+    dicerolld10()
+
+
+def dicerolld20():
+    print("Roll the d20 dice! Click Enter! Click b to return")
+    option = input("-> ")
+    if option == "b":
+        start()
+    else:
+        print(random.randint(1, 20))
+
+    dicerolld20()
+
+
+def dicerolld4():
+    print("Roll the d4 dice! Click Enter! Click b to return")
+    option = input("-> ")
+    if option == "b":
+        start()
+    else:
+        print(random.randint(1, 4))
+
+    dicerolld4()
+
+
+def dicerolld6():
+    print("Roll the d6 dice! Click Enter! Click b to return")
+    option = input("-> ")
+    if option == "b":
+        start()
+    else:
+        print(random.randint(1, 6))
+
+    dicerolld6()
+
+
+def dicerolld8():
+    print("Roll the d8 dice! Click Enter! Click b to return")
+    option = input("-> ")
+    if option == "b":
+        start()
+    else:
+        print(random.randint(1, 8))
+
+    dicerolld8()
+
+
+def dicerolld12():
+    print("Roll the d12 dice! Click Enter! Click b to return")
+    option = input("-> ")
+    if option == "b":
+        start()
+    else:
+        print(random.randint(1, 12))
+
+    dicerolld12()
+
+
+
+def dicerolld100():
+    print("Roll the d100 dice! Click Enter! Click b to return")
+    option = input("-> ")
+    if option == "b":
+        start()
+    else:
+        print(random.randint(1, 100))
+
+    dicerolld100()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+def dead():
+    print("You dead sucka! Time to roll up a new one! Click Enter to continue")
+    input("->")
+
+
+
+
 startmenu()
-
-######YEAHHHHHH
- #yup
-
-
-
-
-
