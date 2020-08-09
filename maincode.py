@@ -54,7 +54,7 @@ def startmenu():
     print("                              |_|\_\_| \_/_/    \_\/   |______|\____/|_____|")
     print("\n")
     print("\n")
-    print("                                             Developed by:")
+    print("                                     Version Beta 1.0 Developed by:")
     print("\n")
     print("                                                 PyRev")
     print("\n")
@@ -166,18 +166,22 @@ def mainscreen():
         dead()
     if PlayerIG.hp > PlayerIG.maxhp:
         PlayerIG.hp = PlayerIG.maxhp
+    if PlayerIG.hp <= 0:
+        dead()
     nameplate = "Name: " + PlayerIG.name
     hp = "HP: " + str(PlayerIG.hp) + "/" + str(PlayerIG.maxhp)
     plevel = "Level: " + str(PlayerIG.level)
     money = "Copper: " + str(PlayerIG.copper)
     food = "Rations: " + str(PlayerIG.rations)
+    armor = "Armor: " + str(PlayerIG.armor)
+    armorbonus = "Armor Bonus: " + str(PlayerIG.armor - 10)
     inventoryslots = "Inventory Slots: " + str(sum(PlayerIG.inventory.values())) + "/" + str(PlayerIG.inventoryslots)
     statindicators = "  DEFENSE    ABILITY    BONUS"
     commandoptions1 = "1.) Dice Roller and Attack"
     commandoptions2 = "2.) Change HP"
-    commandoptions3 = "3.) Change Level"
+    commandoptions3 = "3.) Change Level and Exp"
     commandoptions4 = "4.) Change Copper Amount"
-    commandoptions5 = "5.) Change Stats"
+    commandoptions5 = "5.) Change Stats or Armor"
     commandoptions6 = "6.) Change Ration Amount"
     commandoptions7 = "7.) View Inventory"
     commandoptions8 = "8.) Change Inventory"
@@ -207,6 +211,7 @@ def mainscreen():
     misfortune = "Misfortune: " + (PlayerIG.misfortune)
     alignment = "Alignment: " + (PlayerIG.alignment)
     features = "   TRAITS"
+    exp = "Experience: " + str(PlayerIG.xp)
     print(statindicators.center(100, " ") + features.ljust(10, " "))
     print(nameplate.ljust(40, " ") + strline.center(20, " ") + physique.rjust(48, " "))
     print(hp.ljust(40, " ") + dexline.center(20, " ") + face.rjust(48, " "))
@@ -214,9 +219,9 @@ def mainscreen():
     print(money.ljust(40, " ") + intline.center(20, " ") + hair.rjust(48, " "))
     print(food.ljust(40, " ") + wisline.center(20, " ") + clothing.rjust(48, " "))
     print(inventoryslots.ljust(40, " ") + chaline.center(20, " ") + virtue.rjust(48, " "))
-    print(vice.rjust(111, " "))
-    print(speech.rjust(111, " "))
-    print(background.rjust(111, " "))
+    print(armor.ljust(40, " ") + vice.rjust(71, " "))
+    print(armorbonus.ljust(40, " ") + speech.rjust(71, " "))
+    print(exp.ljust(40, " ") + background.rjust(71, " "))
     print(misfortune.rjust(111, " "))
     print(alignment.rjust(111, " "))
     print("\n")
@@ -248,11 +253,16 @@ def mainscreen():
     if option == "8":
         changeinventory()
     if option == "9":
-        with open('savefile', 'wb') as f:
-            pickle.dump(PlayerIG, f)
-            print("\n Game has been saved! And so has your soul!\n")
-            input("->")
-            mainscreen()
+        f = open('savefile', 'wb')
+        pickle.dump(PlayerIG, f)
+        print("\n Game has been saved! And so has your soul!\n")
+        f.close()
+        input("->")
+        mainscreen()
+        #print(f"dats is")
+        # with open("savefile", "rb") as fp:
+        #     data = pickle.load(fp)
+        #     print(f"dats is {data}")
     else:
         mainscreen()
 
@@ -369,6 +379,7 @@ def changestats():
     print("4.) Intelligence")
     print("5.) Wisdom")
     print("6.) Charisma")
+    print("7.) Armor")
     option = input("->")
     if option.strip() == "1":
         print("What is your new strength stat?")
@@ -406,6 +417,11 @@ def changestats():
         PlayerIG.cha = option
         PlayerIG.chabonus = PlayerIG.cha - 10
         mainscreen()
+    if option.strip() == "7":
+        print("What is your armor stat?")
+        option = int(input("->"))
+        PlayerIG.armor = option
+        mainscreen()
     if option.strip().lower() == "b":
         mainscreen()
     else:
@@ -422,12 +438,12 @@ def changecopper():
     if option.strip() == "1":
         print("By how much?")
         option2 = int(input("->"))
-        PlayerIG.copper = option2
+        PlayerIG.copper += option2
         mainscreen()
     if option.strip() == "2":
         print("By how much?")
         option3 = int(input("->"))
-        PlayerIG.copper = option3
+        PlayerIG.copper -= option3
         mainscreen()
     if option.lower().strip() == "b":
         mainscreen()
@@ -439,15 +455,30 @@ def changecopper():
 
 
 def changelevel():
-    print("Level Up or Level Down? Press b to return")
-    print("1.) Level Up")
-    print("2.) Level Down")
+    print("Change Level or XP?")
+    print("1.) Level")
+    print("2.) XP")
     option = input("->")
-    if option.strip() == "1":
-        PlayerIG.level += 1
-    if option.strip() == "2":
-        PlayerIG.level -= 1
-    if option.lower().strip() == "b":
+    if option == "1":
+        print("Level Up or Level Down? Press b to return")
+        print("1.) Level Up")
+        print("2.) Level Down")
+        option = input("->")
+        if option.strip() == "1":
+            PlayerIG.level += 1
+            mainscreen()
+        if option.strip() == "2":
+            PlayerIG.level -= 1
+        mainscreen()
+        if option.lower().strip() == "b":
+            mainscreen()
+        else:
+            print("Invalid choice, try again.")
+            changelevel()
+    if option == "2":
+        print("What is your current exp?")
+        option = int(input("->"))
+        Player.xp = option
         mainscreen()
     else:
         print("Invalid choice, try again.")
@@ -571,8 +602,7 @@ def dicerolld10():
         start()
     else:
         print(random.randint(1, 10))
-
-    dicerolld10()
+        dicerolld10()
 
 
 def dicerolld20():
@@ -602,8 +632,7 @@ def dicerolld20():
         start()
     else:
         print(random.randint(1, 20))
-
-    dicerolld20()
+        dicerolld20()
 
 
 def dicerolld4():
@@ -633,8 +662,7 @@ def dicerolld4():
         start()
     else:
         print(random.randint(1, 4))
-
-    dicerolld4()
+        dicerolld4()
 
 
 def dicerolld6():
@@ -664,8 +692,7 @@ def dicerolld6():
         start()
     else:
         print(random.randint(1, 6))
-
-    dicerolld6()
+        dicerolld6()
 
 
 def dicerolld8():
@@ -695,8 +722,7 @@ def dicerolld8():
         start()
     else:
         print(random.randint(1, 8))
-
-    dicerolld8()
+        dicerolld8()
 
 
 def dicerolld12():
@@ -726,8 +752,7 @@ def dicerolld12():
         start()
     else:
         print(random.randint(1, 12))
-
-    dicerolld12()
+        dicerolld12()
 
 
 
